@@ -1,11 +1,11 @@
 import { useContext, useEffect } from "react";
-import { Container } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
-import AddEvent from "@/components/AddEvent";
-import { AuthContext } from "@/context/AuthContext";
+import { Container } from "@chakra-ui/react";
+import TodoList from "../components/TodoList";
 import Navbar from "@/components/Navbar";
+import { AuthContext } from "@/context/AuthContext";
 
-export default function NewEvent() {
+export default function Home() {
   const { user } = useContext(AuthContext);
   const router = useRouter();
 
@@ -19,7 +19,7 @@ export default function NewEvent() {
     user && (
       <Container maxW="7xl">
         <Navbar />
-        <AddEvent />
+        <TodoList />
       </Container>
     )
   );

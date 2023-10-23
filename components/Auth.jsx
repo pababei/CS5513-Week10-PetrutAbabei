@@ -1,15 +1,28 @@
 import React from "react";
 import { useRouter } from "next/navigation";
-import { Box, Button, Icon, Link, Text, useColorMode } from "@chakra-ui/react";
+import {
+  Avatar,
+  Box,
+  Button,
+  Link,
+  Menu,
+  MenuButton,
+  MenuDivider,
+  MenuItem,
+  MenuList,
+  Text,
+  useToast,
+} from "@chakra-ui/react";
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
-import { FaGoogle, FaHome, FaMoon, FaSun } from "react-icons/fa";
+import { FaGoogle } from "react-icons/fa";
 import { auth } from "../firebase/firebase-app";
 import useAuth from "../hooks/useAuth";
 
 const Auth = () => {
-  const { toggleColorMode, colorMode } = useColorMode();
   const { isLoggedIn, user } = useAuth();
   const router = useRouter();
+  const toast = useToast();
+
   const handleAuth = async () => {
     const provider = new GoogleAuthProvider();
     signInWithPopup(auth, provider)
@@ -20,6 +33,11 @@ const Auth = () => {
         // The signed-in user info.
         const user = result.user;
         // ...
+        toast({
+          title: "Login successful",
+          description: "Welcome, " + user.displayName,
+          status: "success",
+        });
       })
       .catch((error) => {
         // Handle Errors here.
@@ -38,20 +56,30 @@ const Auth = () => {
   };
 
   return (
-    <Box position={"fixed"} top="5%" right="5%">
-      <Link href="/">
-        {user ? <Button leftIcon={<FaHome />}>Home</Button> : ""}
-      </Link>
-      <Button onClick={() => toggleColorMode()}>
-        {colorMode == "dark" ? <FaSun /> : <FaMoon />}
-      </Button>{" "}
+    <Box>
       {isLoggedIn && (
-        <>
-          <Text color="green.500">{user.email}</Text>
-          <Link color="red.500" onClick={() => handleSignout()}>
-            Logout
-          </Link>
-        </>
+        <Menu>
+          <MenuButton
+            as={Button}
+            rounded={"full"}
+            variant={"link"}
+            cursor={"pointer"}
+            minW={0}
+          >
+            <Avatar size={"sm"} src={user.photoURL} />
+          </MenuButton>
+          <MenuList>
+            <MenuItem>
+              <Text color="green.500">{user.displayName}</Text>
+            </MenuItem>
+            <MenuDivider />
+            <MenuItem>
+              <Link color="red.500" onClick={() => handleSignout()}>
+                Logout
+              </Link>
+            </MenuItem>
+          </MenuList>
+        </Menu>
       )}
       {!isLoggedIn && (
         <Button leftIcon={<FaGoogle />} onClick={() => handleAuth()}>

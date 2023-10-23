@@ -21,6 +21,7 @@ const AddEvent = () => {
 
   const toast = useToast();
   const { isLoggedIn, user } = useAuth();
+
   const handleEventCreate = async () => {
     if (!isLoggedIn) {
       toast({
@@ -48,8 +49,13 @@ const AddEvent = () => {
     toast({ title: "Event created successfully", status: "success" });
   };
   return (
-    <Box w="40%" margin={"0 auto"} display="block" mt={5}>
-      <Heading mb={4}>New Event</Heading>
+    <Box
+      w={{ base: "80%", md: "60%", lg: "40%" }}
+      margin={"0 auto"}
+      display="block"
+      mt={5}
+    >
+      <Heading mb={4}>New event</Heading>
       <Stack direction="column">
         <Input
           placeholder="Date"

@@ -11,8 +11,6 @@ const useAuth = () => {
       setUser(user);
     });
   });
-  console.log(user);
-  console.log(isLoggedIn);
   return { user, isLoggedIn };
 };
 

@@ -7,10 +7,8 @@ import {
   Input,
   InputGroup,
   InputLeftAddon,
-  Select,
   Stack,
   useToast,
-  Textarea,
 } from "@chakra-ui/react";
 import { AuthContext } from "@/context/AuthContext";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
@@ -18,42 +16,43 @@ import { db } from "@/firebase/firebase-app";
 import Navbar from "@/components/Navbar";
 import { useRouter } from "next/navigation";
 
-const TodoItem = ({ itemData }) => {
+const ContactItem = ({ itemData }) => {
   const { user } = useContext(AuthContext);
   useEffect(() => {
     if (user == null) {
       router.push("/");
-      return;
     }
   });
 
   const toast = useToast();
   const router = useRouter();
-  const [title, setTitle] = useState(itemData.title);
-  const [description, setDescription] = useState(itemData.description);
-  const [status, setStatus] = useState(itemData.status);
+  const [firstName, setFirstName] = useState(itemData.firstName);
+  const [lastName, setLastName] = useState(itemData.lastName);
+  const [email, setEmail] = useState(itemData.email);
+  const [phone, setPhone] = useState(itemData.phone);
 
   const sendData = async () => {
     console.log("sending", itemData);
-    const docRef = doc(db, "todo", itemData.id);
+    const docRef = doc(db, "contact", itemData.id);
     updateDoc(docRef, {
-      title: title,
-      description: description,
-      status: status,
+      firstName: firstName,
+      lastName: lastName,
+      email: email,
+      phone: phone,
     })
       .then((docRef) => {
-        toast({ title: "Todo updated successfully", status: "success" });
+        toast({ title: "Contact updated successfully", status: "success" });
       })
       .catch((error) => {
         toast({
-          title: "Todo could not be updated",
+          title: "Contact could not be updated",
           status: "error",
           duration: 9000,
           isClosable: true,
         });
         console.log(error);
       });
-    router.push("/todos");
+    router.push("/contacts");
   };
 
   return (
@@ -66,38 +65,30 @@ const TodoItem = ({ itemData }) => {
           display="block"
           mt={5}
         >
-          <Heading mb={4}>Edit to do</Heading>
+          <Heading mb={4}>Edit contact</Heading>
           <Stack spacing={3}>
             <Input
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="title"
+              placeholder="First name"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
             />
-            <Textarea
-              type="text"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder="description"
+            <Input
+              placeholder="Last name"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
             />
-            <Select
-              type="text"
-              value={status}
-              onChange={(e) => setStatus(e.target.value)}
-            >
-              <option
-                value={"pending"}
-                style={{ color: "yellow", fontWeight: "bold" }}
-              >
-                Pending
-              </option>
-              <option
-                value={"completed"}
-                style={{ color: "green", fontWeight: "bold" }}
-              >
-                Completed
-              </option>
-            </Select>
+            <Input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <Input
+              type="phone"
+              placeholder="Phone"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+            />
             <InputGroup>
               <InputLeftAddon children="Created:" />
               <Input
@@ -117,7 +108,7 @@ const TodoItem = ({ itemData }) => {
 
 export async function getServerSideProps(context) {
   let itemData = null;
-  const docRef = doc(db, "todo", context.params.id);
+  const docRef = doc(db, "contact", context.params.id);
   const docSnap = await getDoc(docRef);
   if (docSnap.exists()) {
     itemData = { id: docSnap.id, ...docSnap.data() };
@@ -129,4 +120,4 @@ export async function getServerSideProps(context) {
   };
 }
 
-export default TodoItem;
+export default ContactItem;

@@ -1,11 +1,11 @@
 import { useContext, useEffect } from "react";
-import { Container } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
-import AddEvent from "@/components/AddEvent";
+import { Container } from "@chakra-ui/react";
 import { AuthContext } from "@/context/AuthContext";
 import Navbar from "@/components/Navbar";
+import AddContact from "@/components/AddContact";
 
-export default function NewEvent() {
+export default function NewTodo() {
   const { user } = useContext(AuthContext);
   const router = useRouter();
 
@@ -14,12 +14,11 @@ export default function NewEvent() {
       router.push("/");
     }
   });
-
   return (
     user && (
       <Container maxW="7xl">
         <Navbar />
-        <AddEvent />
+        <AddContact />
       </Container>
     )
   );

@@ -1,4 +1,4 @@
-import React from "react";
+import { useState, useContext, useEffect } from "react";
 import {
   Box,
   Input,
@@ -9,26 +9,32 @@ import {
   Select,
   useToast,
 } from "@chakra-ui/react";
-import useAuth from "../hooks/useAuth";
+import { AuthContext } from "@/context/AuthContext";
 import { addTodo } from "../api/todo";
+import { useRouter } from "next/navigation";
 
 const AddTodo = () => {
-  const [title, setTitle] = React.useState("");
-  const [description, setDescription] = React.useState("");
-  const [status, setStatus] = React.useState("pending");
-  const [isLoading, setIsLoading] = React.useState(false);
-  const toast = useToast();
-  const { isLoggedIn, user } = useAuth();
-  const handleTodoCreate = async () => {
-    if (!isLoggedIn) {
+  const { user } = useContext(AuthContext);
+  useEffect(() => {
+    if (user == null) {
       toast({
         title: "You must be logged in to create a todo",
         status: "error",
         duration: 9000,
         isClosable: true,
       });
-      return;
+      router.push("/");
     }
+  });
+
+  const toast = useToast();
+  const router = useRouter();
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [status, setStatus] = useState("pending");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleTodoCreate = async () => {
     setIsLoading(true);
     const todo = {
       title,
@@ -43,9 +49,15 @@ const AddTodo = () => {
     setStatus("pending");
     toast({ title: "Todo created successfully", status: "success" });
   };
+
   return (
-    <Box w="40%" margin={"0 auto"} display="block" mt={5}>
-      <Heading mb={4}>New To Do</Heading>
+    <Box
+      w={{ base: "80%", md: "60%", lg: "40%" }}
+      margin={"0 auto"}
+      display="block"
+      mt={5}
+    >
+      <Heading mb={4}>New to do</Heading>
       <Stack direction="column">
         <Input
           placeholder="Title"
